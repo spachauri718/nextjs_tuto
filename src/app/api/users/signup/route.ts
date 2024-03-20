@@ -1,4 +1,4 @@
-import { connection } from "@/dbConfig/dbConfig";
+import { connect } from "@/dbConfig/dbConfig";
 import User from "@/models/userModel";
 
 import bcryptjs from "bcrypt";
@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 // IN NEXT JS EVERY TIME YOU HAVE TO CALL THIS DATABASE CONNECTION FUNCTION 
-connection()
+connect()
 
 export async function POST(request: NextRequest) {
 
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
 
 
-        const newUser = new User({
+        const newUser = await new User({
             username,
             email,
             password :  hashedPassword,
@@ -54,29 +54,6 @@ export async function POST(request: NextRequest) {
 
 
         
-
-        // create token data
-
-        const tokenData = {
-            id:user._id,
-            email:user.email,
-            username:user.username 
-        }
-
-        //create token
-
-        const token = await jwt.sign(tokenData,process.env.TOKEN_SECRET!,{expiresIn: "1d"})
-
-        const response = NextResponse.json({
-            message : "Login successful",
-            success : true,
-        })
-
-        response.cookies.set("token", token,{
-            httpOnly: true,
-        })
-
-        return response;
 
         
 
